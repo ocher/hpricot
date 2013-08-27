@@ -5,9 +5,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jruby.anno.JRubyMethod;
 import org.jruby.Ruby;
 import org.jruby.RubyModule;
-import org.jruby.runtime.CallbackFactory;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.runtime.load.BasicLibraryService;
 
@@ -15,11 +15,11 @@ public class FastXsService implements BasicLibraryService {
 
     public boolean basicLoad(final Ruby runtime) throws IOException {
         RubyModule string = runtime.getModule("String");
-        CallbackFactory fact = runtime.callbackFactory(FastXsService.class);
-        string.defineMethod("fast_xs",fact.getFastSingletonMethod("fast_xs"));
+        string.defineAnnotatedMethods(FastXsService.class);
         return true;
     }
 
+    @JRubyMethod
     public static IRubyObject fast_xs(IRubyObject recv) {
         String string = recv.convertToString().getUnicodeValue();
         StringWriter writer = new StringWriter ((int)(string.length() * 1.5));
